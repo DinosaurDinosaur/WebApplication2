@@ -1,6 +1,114 @@
 @{
-    ViewData["Title"] = "這裡有一個小工具";
+    ViewData["Title"] = "計算機";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>這邊要放一個小工具</p>
+<h3>會員登入</h3>
+<form id="loginForm">
+    <div>
+        <label for="username">帳號：</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    <div>
+        <label for="password">密碼：</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">登入</button>
+</form>
+<h1>簡易計算機</h1>
+
+<div class="calculator">
+    <input type="text" id="display" readonly>
+    <div class="buttons">
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="appendValue('/')">/</button>
+        <button onclick="appendValue('*')">*</button>
+        <button onclick="appendValue('-')">-</button>
+        <button onclick="appendValue('7')">7</button>
+        <button onclick="appendValue('8')">8</button>
+        <button onclick="appendValue('9')">9</button>
+        <button onclick="appendValue('+')">+</button>
+        <button onclick="appendValue('4')">4</button>
+        <button onclick="appendValue('5')">5</button>
+        <button onclick="appendValue('6')">6</button>
+        <button onclick="calculate()">=</button>
+        <button onclick="appendValue('1')">1</button>
+        <button onclick="appendValue('2')">2</button>
+        <button onclick="appendValue('3')">3</button>
+        <button onclick="appendValue('0')">0</button>
+        <button onclick="appendValue('.')">.</button>
+    </div>
+</div>
+
+<style>
+    
+    .calculator {
+        width: 250px;
+        margin: 50px auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    #display {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 5px;
+        font-size: 1.5em;
+        text-align: right;
+    }
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+    }
+    button {
+        padding: 15px;
+        font-size: 1.2em;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    const display = document.getElementById('display');
+
+    function clearDisplay() {
+        display.value = '';
+    }
+
+    function appendValue(value) {
+        display.value += value;
+    }
+
+    function calculate() {
+        try {
+            display.value = eval(display.value);
+        } catch (e) {
+            display.value = 'Error';
+        }
+    }
+
+
+     document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // 阻止表單的預設提交行為
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/api/Auth/Login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('登入成功！');
+            // 這裡可以導向到會員專屬頁面
+            // window.location.href = '/Home/MemberPage';
+        } else {
+            alert('登入失敗：' + result.message);
+        }
+    });
+</script>
